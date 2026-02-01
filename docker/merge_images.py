@@ -44,6 +44,12 @@ def extract_cve_workspaces():
 
         if os.path.exists(dest_dir):
             print(f"[{i}/{total}] Skipping {cve_id} - already extracted")
+            # Delete the image to free disk space
+            subprocess.run(
+                ["docker", "rmi", image],
+                capture_output=True,
+            )
+            print(f"         Deleted image {image}")
             success += 1
             continue
 
@@ -77,6 +83,13 @@ def extract_cve_workspaces():
                 ["docker", "rm", container_name],
                 capture_output=True,
             )
+
+            # Delete the image to free disk space
+            subprocess.run(
+                ["docker", "rmi", image],
+                capture_output=True,
+            )
+            print(f"         Deleted image {image}")
 
     print(f"\nDone! Extracted {success}/{total} workspaces to ./{OUTPUT_DIR}/")
     if failed:
